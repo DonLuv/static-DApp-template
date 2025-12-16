@@ -1,5 +1,5 @@
 import { createRootRoute, Outlet } from '@tanstack/react-router'
-import { TanStackRouterDevtools } from '@tanstack/router-devtools'
+import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { Header } from '../components/layout/Header'
 import { Footer } from '../components/layout/Footer'
 
@@ -11,7 +11,7 @@ export const Route = createRootRoute({
         <Outlet />
       </main>
       <Footer />
-      {process.env.NODE_ENV === 'development' && <TanStackRouterDevtools />}
+      {import.meta.env.DEV && <TanStackRouterDevtools />}
     </div>
   ),
 })
