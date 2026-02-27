@@ -50,24 +50,26 @@ function AboutComponent() {
               <pre className="text-sm overflow-x-auto">
                 {`src/
 ├── components/
-│   ├── example/         # Example page components
-│   │   ├── AuthExample.tsx
-│   │   ├── ContractExample.tsx
-│   │   └── FormExample.tsx
+│   ├── AuthExample.tsx          # General DApp example
+│   ├── FormExample.tsx          # General DApp example
+│   ├── contracts/
+│   │   └── example-contract/    # Contract-specific UI
+│   │       └── ContractExample.tsx
 │   ├── layout/          # Header, Footer
 │   ├── theme/           # ThemeToggle
 │   ├── ui/              # shadcn/ui components
 │   └── web3/            # WalletConnect, TransactionButton, NetworkGuard
 ├── hooks/
-│   ├── example/
-│   │   └── useCounter.ts      # Example contract read hooks
+│   ├── contracts/
+│   │   └── example-contract/    # Contract-specific hooks
+│   │       └── useCounter.ts
 │   ├── useAuth.tsx            # Auth context + SIWE provider
 │   ├── useTheme.tsx           # Theme context + provider
 │   └── useTransactionFlow.ts  # Tx lifecycle state machine
 ├── lib/
 │   ├── contracts/
-│   │   └── example/
-│   │       └── abi.ts         # Example ABI definitions + config
+│   │   └── example-contract/    # Contract ABI + config
+│   │       └── abi.ts
 │   ├── env.ts           # Runtime env validation (Zod)
 │   ├── utils.ts         # cn() helper
 │   └── wagmi.ts         # wagmi config
@@ -125,7 +127,7 @@ npm run dev`}
                   <li>
                     Replace the Counter ABI in{' '}
                     <code className="bg-muted px-1.5 py-0.5 rounded">
-                      src/lib/contracts/example/abi.ts
+                      src/lib/contracts/example-contract/abi.ts
                     </code>{' '}
                     with your contract
                   </li>
