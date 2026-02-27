@@ -1,22 +1,21 @@
 import { http, createConfig } from 'wagmi'
 import { mainnet, sepolia, polygon } from 'wagmi/chains'
 import { injected, metaMask, walletConnect } from 'wagmi/connectors'
-
-// Get your WalletConnect project ID from https://cloud.walletconnect.com
-const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID || 'your-project-id'
+import { env } from './env'
 
 export const config = createConfig({
   chains: [mainnet, sepolia, polygon],
   connectors: [
     injected(),
-    metaMask(),
+    metaMask({ enableAnalytics: false }),
     walletConnect({
-      projectId,
+      projectId: env.VITE_WALLETCONNECT_PROJECT_ID,
       metadata: {
-        name: 'donluv',
-        description: 'donluv - Web3 Builder Portfolio',
-        url: 'https://donluv.xyz',
-        icons: ['https://avatars.githubusercontent.com/u/37784886'],
+        name: 'DApp Template',
+        description: 'Static DApp Template',
+        url: typeof window !== 'undefined' ? window.location.origin : 'https://localhost',
+        // TODO: Replace with your app's icon URL
+        icons: ['/favicon.ico'],
       },
     }),
   ],

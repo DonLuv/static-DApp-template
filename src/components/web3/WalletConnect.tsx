@@ -1,65 +1,21 @@
-import { useState } from 'react'
-import { useAccount, useConnect, useDisconnect, useSignMessage } from 'wagmi'
-import { SiweMessage } from 'siwe'
-import { Button } from './ui/button'
+import { useConnect, useDisconnect } from 'wagmi'
+import { useAuth } from '@/hooks/useAuth'
+import { Button } from '../ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from './ui/dropdown-menu'
+} from '../ui/dropdown-menu'
 
 export function WalletConnect() {
-  const { address, isConnected } = useAccount()
+  const { address, isConnected, isAuthenticated, isAuthenticating, signIn, signOut } = useAuth()
   const { connect, connectors, isPending } = useConnect()
   const { disconnect } = useDisconnect()
-  const { signMessage } = useSignMessage()
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [isAuthenticating, setIsAuthenticating] = useState(false)
-
-  const handleSiweAuth = async () => {
-    if (!address) return
-
-    setIsAuthenticating(true)
-    try {
-      const message = new SiweMessage({
-        domain: window.location.host,
-        address: address,
-        statement: 'Sign in to donluv.xyz',
-        uri: window.location.origin,
-        version: '1',
-        chainId: 1,
-        nonce: Math.random().toString(36).substring(2),
-        issuedAt: new Date().toISOString(),
-      })
-
-      const messageToSign = message.prepareMessage()
-
-      signMessage(
-        { message: messageToSign },
-        {
-          onSuccess: signature => {
-            setIsAuthenticated(true)
-            console.log('SIWE authentication successful', {
-              message: messageToSign,
-              signature,
-            })
-          },
-          onError: error => {
-            console.error('SIWE authentication failed', error)
-          },
-        }
-      )
-    } catch (error) {
-      console.error('Error during SIWE auth:', error)
-    } finally {
-      setIsAuthenticating(false)
-    }
-  }
 
   const handleDisconnect = () => {
+    signOut()
     disconnect()
-    setIsAuthenticated(false)
   }
 
   if (isConnected && address) {
@@ -75,7 +31,7 @@ export function WalletConnect() {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             {!isAuthenticated && (
-              <DropdownMenuItem onClick={handleSiweAuth} disabled={isAuthenticating}>
+              <DropdownMenuItem onClick={() => signIn()} disabled={isAuthenticating}>
                 {isAuthenticating ? 'Signing...' : 'Sign In with Ethereum'}
               </DropdownMenuItem>
             )}

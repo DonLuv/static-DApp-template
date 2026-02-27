@@ -1,5 +1,6 @@
 import { createRootRoute, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
+import { Toaster } from '@/components/ui/sonner'
 import { Header } from '../components/layout/Header'
 import { Footer } from '../components/layout/Footer'
 
@@ -11,6 +12,7 @@ export const Route = createRootRoute({
         <Outlet />
       </main>
       <Footer />
+      <Toaster richColors position="bottom-right" />
       {import.meta.env.DEV && <TanStackRouterDevtools />}
     </div>
   ),
