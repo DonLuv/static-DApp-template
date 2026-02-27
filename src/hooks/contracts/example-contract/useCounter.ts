@@ -8,7 +8,7 @@
  */
 
 import { useReadContract, useWatchContractEvent } from 'wagmi'
-import { counterConfig } from '@/lib/contracts/example/abi'
+import { counterConfig } from '@/lib/contracts/example-contract/abi'
 
 /**
  * Read the current count from the Counter contract.

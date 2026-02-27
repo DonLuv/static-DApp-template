@@ -133,11 +133,9 @@ export function FormExample() {
               <form.Field
                 name="ethAddress"
                 validators={{
-                  onBlur: z
-                    .string()
-                    .refine(val => val === '' || /^0x[a-fA-F0-9]{40}$/.test(val), {
-                      message: 'Must be a valid Ethereum address (0x...)',
-                    }),
+                  onBlur: z.string().refine(val => val === '' || /^0x[a-fA-F0-9]{40}$/.test(val), {
+                    message: 'Must be a valid Ethereum address (0x...)',
+                  }),
                 }}
               >
                 {field => (

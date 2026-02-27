@@ -10,8 +10,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { NetworkGuard } from '@/components/web3/NetworkGuard'
 import { TransactionButton } from '@/components/web3/TransactionButton'
 import { useTransactionFlow } from '@/hooks/useTransactionFlow'
-import { useCount, useWatchCountChanged } from '@/hooks/example/useCounter'
-import { counterConfig } from '@/lib/contracts/example/abi'
+import { useCount, useWatchCountChanged } from '@/hooks/contracts/example-contract/useCounter'
+import { counterConfig } from '@/lib/contracts/example-contract/abi'
 
 export function ContractExample() {
   const { isConnected } = useAccount()
