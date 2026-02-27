@@ -11,6 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ExamplesFormRouteImport } from './routes/examples/form'
+import { Route as ExamplesContractRouteImport } from './routes/examples/contract'
+import { Route as ExamplesAuthRouteImport } from './routes/examples/auth'
 
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
@@ -22,31 +25,58 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExamplesFormRoute = ExamplesFormRouteImport.update({
+  id: '/examples/form',
+  path: '/examples/form',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExamplesContractRoute = ExamplesContractRouteImport.update({
+  id: '/examples/contract',
+  path: '/examples/contract',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExamplesAuthRoute = ExamplesAuthRouteImport.update({
+  id: '/examples/auth',
+  path: '/examples/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/examples/auth': typeof ExamplesAuthRoute
+  '/examples/contract': typeof ExamplesContractRoute
+  '/examples/form': typeof ExamplesFormRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/examples/auth': typeof ExamplesAuthRoute
+  '/examples/contract': typeof ExamplesContractRoute
+  '/examples/form': typeof ExamplesFormRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/examples/auth': typeof ExamplesAuthRoute
+  '/examples/contract': typeof ExamplesContractRoute
+  '/examples/form': typeof ExamplesFormRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about'
+  fullPaths: '/' | '/about' | '/examples/auth' | '/examples/contract' | '/examples/form'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about'
-  id: '__root__' | '/' | '/about'
+  to: '/' | '/about' | '/examples/auth' | '/examples/contract' | '/examples/form'
+  id: '__root__' | '/' | '/about' | '/examples/auth' | '/examples/contract' | '/examples/form'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  ExamplesAuthRoute: typeof ExamplesAuthRoute
+  ExamplesContractRoute: typeof ExamplesContractRoute
+  ExamplesFormRoute: typeof ExamplesFormRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +95,36 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/examples/form': {
+      id: '/examples/form'
+      path: '/examples/form'
+      fullPath: '/examples/form'
+      preLoaderRoute: typeof ExamplesFormRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/examples/contract': {
+      id: '/examples/contract'
+      path: '/examples/contract'
+      fullPath: '/examples/contract'
+      preLoaderRoute: typeof ExamplesContractRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/examples/auth': {
+      id: '/examples/auth'
+      path: '/examples/auth'
+      fullPath: '/examples/auth'
+      preLoaderRoute: typeof ExamplesAuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  ExamplesAuthRoute: ExamplesAuthRoute,
+  ExamplesContractRoute: ExamplesContractRoute,
+  ExamplesFormRoute: ExamplesFormRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

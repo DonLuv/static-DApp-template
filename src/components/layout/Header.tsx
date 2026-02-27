@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router'
-import { WalletConnect } from '../WalletConnect'
+import { WalletConnect } from '../web3/WalletConnect'
+import { ThemeToggle } from '../theme/ThemeToggle'
 
 export function Header() {
   return (
@@ -19,7 +20,7 @@ export function Header() {
                 color: 'transparent',
               }}
             >
-              donluv
+              DApp Template
             </Link>
           </div>
 
@@ -33,13 +34,27 @@ export function Header() {
             >
               Home
             </Link>
-            {/*<Link*/}
-            {/*    to="/projects"*/}
-            {/*    className="text-sm font-medium transition-colors hover:text-primary [&.active]:text-primary"*/}
-            {/*    activeProps={{ className: "text-primary" }}*/}
-            {/*>*/}
-            {/*    Projects*/}
-            {/*</Link>*/}
+            <Link
+              to="/examples/form"
+              className="text-sm font-medium transition-colors hover:text-primary [&.active]:text-primary"
+              activeProps={{ className: 'text-primary' }}
+            >
+              Form Example
+            </Link>
+            <Link
+              to="/examples/contract"
+              className="text-sm font-medium transition-colors hover:text-primary [&.active]:text-primary"
+              activeProps={{ className: 'text-primary' }}
+            >
+              Contract Example
+            </Link>
+            <Link
+              to="/examples/auth"
+              className="text-sm font-medium transition-colors hover:text-primary [&.active]:text-primary"
+              activeProps={{ className: 'text-primary' }}
+            >
+              Auth Example
+            </Link>
             <Link
               to="/about"
               className="text-sm font-medium transition-colors hover:text-primary [&.active]:text-primary"
@@ -49,8 +64,9 @@ export function Header() {
             </Link>
           </nav>
 
-          {/* Wallet Connection */}
-          <div className="flex items-center">
+          {/* Theme Toggle + Wallet Connection */}
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
             <WalletConnect />
           </div>
         </div>
@@ -66,13 +82,27 @@ export function Header() {
             >
               Home
             </Link>
-            {/*<Link*/}
-            {/*    to="/projects"*/}
-            {/*    className="text-sm font-medium transition-colors hover:text-primary [&.active]:text-primary"*/}
-            {/*    activeProps={{ className: "text-primary" }}*/}
-            {/*>*/}
-            {/*    Projects*/}
-            {/*</Link>*/}
+            <Link
+              to="/examples/form"
+              className="text-sm font-medium transition-colors hover:text-primary [&.active]:text-primary"
+              activeProps={{ className: 'text-primary' }}
+            >
+              Form
+            </Link>
+            <Link
+              to="/examples/contract"
+              className="text-sm font-medium transition-colors hover:text-primary [&.active]:text-primary"
+              activeProps={{ className: 'text-primary' }}
+            >
+              Contract
+            </Link>
+            <Link
+              to="/examples/auth"
+              className="text-sm font-medium transition-colors hover:text-primary [&.active]:text-primary"
+              activeProps={{ className: 'text-primary' }}
+            >
+              Auth
+            </Link>
             <Link
               to="/about"
               className="text-sm font-medium transition-colors hover:text-primary [&.active]:text-primary"

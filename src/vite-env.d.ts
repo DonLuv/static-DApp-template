@@ -2,7 +2,7 @@
 
 interface ImportMetaEnv {
   readonly VITE_WALLETCONNECT_PROJECT_ID: string
-  // Add other VITE_ environment variables here as needed
+  readonly VITE_CONTRACT_ADDRESS: string
 }
 
 interface ImportMeta {

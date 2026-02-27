@@ -22,5 +22,19 @@ export default tseslint.config(
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     },
+  },
+  // shadcn/ui components export variants alongside components — not a refresh concern
+  {
+    files: ['src/components/ui/**/*.{ts,tsx}'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
+  // Context files co-export providers and hooks by design
+  {
+    files: ['src/hooks/useTheme.tsx', 'src/hooks/useAuth.tsx'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
   }
 )

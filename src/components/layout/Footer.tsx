@@ -17,32 +17,49 @@ export function Footer() {
                 color: 'transparent',
               }}
             >
-              donluv
+              {/* TODO: Replace with your project name */}
+              DApp Template
             </h3>
             <p className="text-sm text-muted-foreground">
-              Web3 builder focused on infrastructure, DAOs, and the metaverse.
+              {/* TODO: Replace with your project description */}A starter template for building
+              static DApps with React, TypeScript, and Web3.
             </p>
           </div>
 
-          {/* Projects */}
+          {/* Resources */}
           <div className="space-y-3">
-            <h4 className="text-sm font-semibold">Projects</h4>
+            <h4 className="text-sm font-semibold">Resources</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              {/*<li>*/}
-              {/*    <Link to="/projects/pizzadao" className="hover:text-primary transition-colors">*/}
-              {/*        PizzaDAO*/}
-              {/*    </Link>*/}
-              {/*</li>*/}
-              {/*<li>*/}
-              {/*    <Link to="/projects/frogland" className="hover:text-primary transition-colors">*/}
-              {/*        Frogland*/}
-              {/*    </Link>*/}
-              {/*</li>*/}
-              {/*<li>*/}
-              {/*    <Link to="/projects/bittrees" className="hover:text-primary transition-colors">*/}
-              {/*        Bittrees*/}
-              {/*    </Link>*/}
-              {/*</li>*/}
+              <li>
+                <a
+                  href="https://wagmi.sh"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-primary transition-colors"
+                >
+                  wagmi Docs
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://tanstack.com/router"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-primary transition-colors"
+                >
+                  TanStack Router
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://ui.shadcn.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-primary transition-colors"
+                >
+                  shadcn/ui
+                </a>
+              </li>
             </ul>
           </div>
 
@@ -55,11 +72,21 @@ export function Footer() {
                   Home
                 </Link>
               </li>
-              {/*<li>*/}
-              {/*    <Link to="/projects" className="hover:text-primary transition-colors">*/}
-              {/*        Projects*/}
-              {/*    </Link>*/}
-              {/*</li>*/}
+              <li>
+                <Link to="/examples/form" className="hover:text-primary transition-colors">
+                  Form Example
+                </Link>
+              </li>
+              <li>
+                <Link to="/examples/contract" className="hover:text-primary transition-colors">
+                  Contract Example
+                </Link>
+              </li>
+              <li>
+                <Link to="/examples/auth" className="hover:text-primary transition-colors">
+                  Auth Example
+                </Link>
+              </li>
               <li>
                 <Link to="/about" className="hover:text-primary transition-colors">
                   About
@@ -72,9 +99,10 @@ export function Footer() {
           <div className="space-y-3">
             <h4 className="text-sm font-semibold">Connect</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
+              {/* TODO: Replace with your own social links */}
               <li>
                 <a
-                  href="https://github.com/donluv"
+                  href="https://github.com"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-primary transition-colors"
@@ -84,7 +112,7 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href="https://twitter.com/donluv"
+                  href="https://twitter.com"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-primary transition-colors"
@@ -94,7 +122,7 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href="https://discord.gg/donluv"
+                  href="https://discord.gg"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-primary transition-colors"
@@ -108,7 +136,10 @@ export function Footer() {
 
         {/* Bottom */}
         <div className="mt-8 pt-6 border-t text-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} donluv. Built with React, TypeScript, and Web3.</p>
+          {/* TODO: Replace with your project name */}
+          <p>
+            &copy; {new Date().getFullYear()} DApp Template. Built with React, TypeScript, and Web3.
+          </p>
         </div>
       </div>
     </footer>
