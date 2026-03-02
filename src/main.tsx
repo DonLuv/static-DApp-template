@@ -1,7 +1,7 @@
 import './index.css'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { RouterProvider, createRouter } from '@tanstack/react-router'
+import { RouterProvider, createRouter, createHashHistory } from '@tanstack/react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 import { config } from './lib/wagmi'
@@ -20,7 +20,10 @@ if (import.meta.env.DEV) {
 }
 
 // Create a new router instance
-const router = createRouter({ routeTree })
+const router = createRouter({
+  routeTree,
+  ...(env.VITE_HASH_ROUTING === 'true' && { history: createHashHistory() }),
+})
 
 // Register the router instance for type safety
 declare module '@tanstack/react-router' {

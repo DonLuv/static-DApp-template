@@ -155,6 +155,43 @@ Use `cn()` from `@/lib/utils` when merging Tailwind classes (wraps `clsx` + `tai
 3. Add TypeScript type in `src/vite-env.d.ts`
 4. Add placeholder in `.env.sample`
 
+### Deploying to IPFS
+
+Asset paths are already relative (`base: './'` in `vite.config.ts`), so the build works at any URL depth without changes. For IPFS-specific features, set these env vars before building:
+
+```bash
+VITE_HASH_ROUTING=true        # Use /#/about instead of /about (no SPA fallback needed)
+VITE_SIWE_DOMAIN=myapp.eth    # Override SIWE domain (see security notes below)
+```
+
+Build and upload to a pinning service:
+
+```bash
+npm run build
+
+# Pinata (recommended — dedicated IPFS pinning, free tier available)
+# Install: npm install -g pinata-cli
+# Requires API key from https://app.pinata.cloud
+pinata upload dist/
+
+# Storacha (formerly web3.storage) — requires account + payment info even for free 5 GiB tier
+# Install: npm install -g @web3-storage/w3cli
+# Setup: w3 space create <name> && w3 space register <email>
+w3 up dist/
+
+# Or upload the dist/ folder via any IPFS pinning service's web UI
+```
+
+Note: `ipfs add -r dist/` (Kubo CLI) only stores files on your **local node** — content disappears from the network when your node goes offline. For persistent hosting, use a pinning service or run your own 24/7 IPFS node.
+
+**Security notes for shared gateways**: On a shared IPFS gateway (e.g., `dweb.link`), all apps share the same origin. This has several implications:
+
+- **SIWE replay**: `window.location.host` is the gateway domain, making SIWE messages replayable across apps. Set `VITE_SIWE_DOMAIN` to your ENS name or custom domain to scope SIWE messages to your app.
+- **WalletConnect project ID**: Domain allowlisting in WalletConnect Cloud becomes ineffective — any app on the same gateway could use your project ID to consume your relay quota. Not a funds-at-risk issue (they can't access wallets), but it degrades your rate limits and analytics.
+- **RPC provider API keys** (Alchemy, Infura, etc.): Domain restrictions are equally ineffective on shared gateways. Other apps on the same origin could use your key and run up your bill. Prefer public RPC endpoints (wagmi's default `http()` transport uses them) or proxy through a backend if billing is a concern.
+
+These shared-origin issues go away if you use a custom domain pointing to your IPFS content (via DNSLink or an ENS+IPFS setup).
+
 ### Adding a shadcn/ui component
 
 ```bash
