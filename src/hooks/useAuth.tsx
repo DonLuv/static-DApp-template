@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, useCallback, type ReactNode } from 'react'
 import { useAccount, useSignMessage } from 'wagmi'
 import { createSiweMessage, generateSiweNonce } from 'viem/siwe'
+import { env } from '@/lib/env'
 
 interface AuthContextValue {
   isConnected: boolean
@@ -29,11 +30,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     setIsAuthenticating(true)
     try {
+      const domain = env.VITE_SIWE_DOMAIN || window.location.host
+      const uri = env.VITE_SIWE_DOMAIN ? `https://${env.VITE_SIWE_DOMAIN}` : window.location.origin
+
       const message = createSiweMessage({
-        domain: window.location.host,
+        domain,
         address,
         statement: 'Sign in with Ethereum to verify your wallet',
-        uri: window.location.origin,
+        uri,
         version: '1',
         chainId,
         nonce: generateSiweNonce(),

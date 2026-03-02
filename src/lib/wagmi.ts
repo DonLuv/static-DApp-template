@@ -14,8 +14,14 @@ export const config = createConfig({
         name: 'DApp Template',
         description: 'Static DApp Template',
         url: typeof window !== 'undefined' ? window.location.origin : 'https://localhost',
-        // TODO: Replace with your app's icon URL
-        icons: ['/favicon.ico'],
+        icons:
+          typeof window !== 'undefined'
+            ? [
+                window.location.origin +
+                  window.location.pathname.replace(/\/?$/, '/') +
+                  'favicon.ico',
+              ]
+            : ['https://localhost/favicon.ico'],
       },
     }),
   ],

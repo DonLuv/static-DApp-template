@@ -18,12 +18,16 @@ const envSchema = z.object({
       message: 'VITE_CONTRACT_ADDRESS must be a valid Ethereum address or empty',
     })
     .default(''),
+  VITE_HASH_ROUTING: z.string().default(''),
+  VITE_SIWE_DOMAIN: z.string().default(''),
 })
 
 function parseEnv() {
   const raw = {
     VITE_WALLETCONNECT_PROJECT_ID: import.meta.env.VITE_WALLETCONNECT_PROJECT_ID ?? '',
     VITE_CONTRACT_ADDRESS: import.meta.env.VITE_CONTRACT_ADDRESS ?? '',
+    VITE_HASH_ROUTING: import.meta.env.VITE_HASH_ROUTING ?? '',
+    VITE_SIWE_DOMAIN: import.meta.env.VITE_SIWE_DOMAIN ?? '',
   }
 
   const result = envSchema.safeParse(raw)
