@@ -10,12 +10,19 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { NetworkGuard } from '@/components/web3/NetworkGuard'
 import { TransactionButton } from '@/components/web3/TransactionButton'
 import { useTransactionFlow } from '@/hooks/useTransactionFlow'
-import { useCount, useWatchCountChanged } from '@/hooks/contracts/example-contract/useCounter'
-import { counterConfig } from '@/lib/contracts/example-contract/abi'
+import { useReadCounter, useWatchCounterEvent } from '@/generated'
+import { counterConfig } from '@/lib/contracts/example-contract/config'
 
 export function ContractExample() {
   const { isConnected } = useAccount()
-  const { data: count, isLoading: isCountLoading, refetch } = useCount()
+  const {
+    data: count,
+    isLoading: isCountLoading,
+    refetch,
+  } = useReadCounter({
+    functionName: 'count',
+    query: { enabled: !!counterConfig.address },
+  })
   const [events, setEvents] = useState<string[]>([])
 
   const incrementTx = useTransactionFlow({
@@ -32,11 +39,15 @@ export function ContractExample() {
     },
   })
 
-  useWatchCountChanged(logs => {
-    const timestamp = new Date().toLocaleTimeString()
-    setEvents(prev => [`[${timestamp}] CountChanged event received`, ...prev.slice(0, 9)])
-    refetch()
-    console.log('CountChanged:', logs)
+  useWatchCounterEvent({
+    eventName: 'CountChanged',
+    enabled: !!counterConfig.address,
+    onLogs: logs => {
+      const timestamp = new Date().toLocaleTimeString()
+      setEvents(prev => [`[${timestamp}] CountChanged event received`, ...prev.slice(0, 9)])
+      refetch()
+      console.log('CountChanged:', logs)
+    },
   })
 
   if (!counterConfig.address) {
