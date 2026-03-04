@@ -65,10 +65,26 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/examples/auth' | '/examples/contract' | '/examples/form'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/examples/auth'
+    | '/examples/contract'
+    | '/examples/form'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/examples/auth' | '/examples/contract' | '/examples/form'
-  id: '__root__' | '/' | '/about' | '/examples/auth' | '/examples/contract' | '/examples/form'
+  to:
+    | '/'
+    | '/about'
+    | '/examples/auth'
+    | '/examples/contract'
+    | '/examples/form'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/examples/auth'
+    | '/examples/contract'
+    | '/examples/form'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {

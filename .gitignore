@@ -22,3 +22,14 @@ dist/
 .vscode/*
 !.vscode/extensions.json
 .idea
+
+# EVM / Hardhat
+evm/artifacts/
+evm/cache/
+evm/ignition/deployments/
+evm/coverage/
+evm/coverage.json
+
+# Generated files
+dapp/src/generated.ts
+dapp/src/routeTree.gen.ts

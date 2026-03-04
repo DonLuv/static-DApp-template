@@ -5,7 +5,16 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
-  { ignores: ['dist'] },
+  {
+    ignores: [
+      'dist',
+      'dapp/dist',
+      'evm/artifacts',
+      'evm/cache',
+      'dapp/src/routeTree.gen.ts',
+      'dapp/src/generated.ts',
+    ],
+  },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ['**/*.{ts,tsx}'],
@@ -25,15 +34,24 @@ export default tseslint.config(
   },
   // shadcn/ui components export variants alongside components — not a refresh concern
   {
-    files: ['src/components/ui/**/*.{ts,tsx}'],
+    files: ['dapp/src/components/ui/**/*.{ts,tsx}'],
     rules: {
       'react-refresh/only-export-components': 'off',
     },
   },
   // Context files co-export providers and hooks by design
   {
-    files: ['src/hooks/useTheme.tsx', 'src/hooks/useAuth.tsx'],
+    files: ['dapp/src/hooks/useTheme.tsx', 'dapp/src/hooks/useAuth.tsx'],
     rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
+  // Disable react-specific rules for evm workspace
+  {
+    files: ['evm/**/*.ts'],
+    rules: {
+      'react-hooks/rules-of-hooks': 'off',
+      'react-hooks/exhaustive-deps': 'off',
       'react-refresh/only-export-components': 'off',
     },
   }

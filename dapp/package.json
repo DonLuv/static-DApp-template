@@ -1,0 +1,51 @@
+{
+  "name": "dapp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "dev": "vite --port=3001",
+    "build": "vite build",
+    "serve": "vite preview",
+    "start": "vite",
+    "generate": "wagmi generate"
+  },
+  "devDependencies": {
+    "@tanstack/router-plugin": "1.141.2",
+    "@types/node": "24.0.1",
+    "@types/react": "19.1.8",
+    "@types/react-dom": "19.1.6",
+    "@vitejs/plugin-react": "4.5.2",
+    "@wagmi/cli": "^2.5.1",
+    "autoprefixer": "10.4.21",
+    "postcss": "8.5.5",
+    "tailwindcss": "3.4.17",
+    "tailwindcss-animate": "1.0.7",
+    "typescript": "5.8.3",
+    "vite": "7.3.0"
+  },
+  "dependencies": {
+    "@metamask/sdk": "0.33.1",
+    "@radix-ui/react-dialog": "1.1.15",
+    "@radix-ui/react-dropdown-menu": "2.1.16",
+    "@radix-ui/react-label": "2.1.8",
+    "@radix-ui/react-separator": "1.1.8",
+    "@radix-ui/react-slot": "1.2.4",
+    "@radix-ui/react-tabs": "1.1.13",
+    "@tanstack/react-form": "1.28.3",
+    "@tanstack/react-query": "5.90.12",
+    "@tanstack/react-router": "1.141.2",
+    "@tanstack/react-router-devtools": "1.141.2",
+    "class-variance-authority": "0.7.1",
+    "clsx": "2.1.1",
+    "lucide-react": "0.515.0",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "sonner": "2.0.7",
+    "tailwind-merge": "3.4.0",
+    "viem": "2.41.2",
+    "wagmi": "3.1.0",
+    "zod": "4.3.6"
+  }
+}

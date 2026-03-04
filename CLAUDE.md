@@ -1,73 +1,120 @@
 # Static DApp Template
 
-Static DApp starter template — React + wagmi + viem + TanStack Router. No server required.
+Monorepo template — Solidity contracts (Hardhat v3) + React DApp (wagmi + viem + TanStack Router). Two npm workspaces: `evm/` for smart contracts, `dapp/` for the frontend.
 
 ## Commands
 
 ```bash
-npm run dev          # Start dev server (port 3001)
-npm run build        # Production build
-npm run typecheck    # TypeScript check (tsc --noEmit)
-npm run lint         # ESLint
-npm run lint:fix     # ESLint with auto-fix
-npm run format       # Prettier format
-npm run format:check # Prettier check
+# Root-level orchestration (run from repo root)
+npm run compile         # Compile Solidity contracts (evm/)
+npm run test:evm        # Run Hardhat tests (evm/)
+npm run generate        # Generate typed ABI + hooks from artifacts (dapp/)
+npm run dev             # Start DApp dev server on port 3001 (dapp/)
+npm run build           # Production build (dapp/)
+npm run typecheck       # TypeScript check (dapp/)
+npm run lint            # ESLint + solhint — both workspaces
+npm run lint:fix        # ESLint with auto-fix
+npm run lint:sol        # Solhint only — Solidity linting
+npm run format          # Prettier format — both workspaces
+npm run format:check    # Prettier check
+
+# Workspace-scoped (or cd into the directory)
+npm run compile -w evm
+npm run test -w evm
+npm run generate -w dapp
+npm run dev -w dapp
+npm run build -w dapp
 ```
 
 ## Architecture
 
 ```
-src/
-├── components/
-│   ├── AuthExample.tsx              # General DApp example (not contract-bound)
-│   ├── FormExample.tsx              # General DApp example (not contract-bound)
-│   ├── contracts/
-│   │   └── example-contract/        # Contract-specific UI components
-│   │       └── ContractExample.tsx
-│   ├── layout/                      # Header, Footer
-│   ├── theme/                       # ThemeToggle
-│   ├── ui/                          # shadcn/ui primitives (auto-generated)
-│   └── web3/                        # WalletConnect, TransactionButton, NetworkGuard
-├── hooks/
-│   ├── contracts/
-│   │   └── example-contract/        # Contract-specific hooks
-│   │       └── useCounter.ts
-│   ├── useAuth.tsx                  # Auth context + SIWE provider
-│   ├── useTheme.tsx                 # Theme context + provider
-│   └── useTransactionFlow.ts        # Tx lifecycle state machine
-├── lib/
-│   ├── contracts/
-│   │   └── example-contract/        # Contract ABI + address config
-│   │       └── abi.ts
-│   ├── env.ts                       # Runtime env validation (Zod)
-│   ├── utils.ts                     # cn() helper
-│   └── wagmi.ts                     # wagmi + connector config
-├── routes/                          # TanStack Router file-based routes
-│   ├── __root.tsx
-│   ├── index.tsx
-│   ├── about.tsx
-│   └── examples/
-│       ├── auth.tsx
-│       ├── form.tsx
-│       └── contract.tsx
-└── main.tsx                         # Entry point + provider nesting
+/
+├── package.json              # Workspace root, shared lint/format deps, husky
+├── eslint.config.js          # Shared linting config
+├── .prettierrc               # Shared formatting config (includes prettier-plugin-solidity)
+├── .solhint.json             # Solhint config for Solidity linting
+├── .husky/                   # Git hooks (must be at repo root)
+├── CLAUDE.md
+├── dapp/
+│   ├── package.json          # DApp-specific deps (react, wagmi, vite, @wagmi/cli)
+│   ├── wagmi.config.ts       # ABI codegen config — reads evm/artifacts
+│   ├── vite.config.ts
+│   ├── tsconfig.json
+│   ├── tailwind.config.js
+│   ├── postcss.config.js
+│   ├── components.json       # shadcn/ui config
+│   ├── index.html
+│   ├── .env.sample
+│   ├── public/
+│   └── src/
+│       ├── generated.ts      # @wagmi/cli output (gitignored)
+│       ├── components/
+│       │   ├── AuthExample.tsx
+│       │   ├── FormExample.tsx
+│       │   ├── contracts/
+│       │   │   └── example-contract/ContractExample.tsx
+│       │   ├── layout/       # Header, Footer
+│       │   ├── theme/        # ThemeToggle
+│       │   ├── ui/           # shadcn/ui primitives (auto-generated)
+│       │   └── web3/         # WalletConnect, TransactionButton, NetworkGuard
+│       ├── hooks/
+│       │   ├── useAuth.tsx   # Auth context + SIWE provider
+│       │   ├── useTheme.tsx  # Theme context + provider
+│       │   └── useTransactionFlow.ts
+│       ├── lib/
+│       │   ├── contracts/
+│       │   │   └── example-contract/config.ts  # Re-exports generated ABI + env address
+│       │   ├── env.ts        # Runtime env validation (Zod)
+│       │   ├── utils.ts      # cn() helper
+│       │   └── wagmi.ts      # wagmi + connector config
+│       ├── routes/           # TanStack Router file-based routes
+│       │   ├── __root.tsx
+│       │   ├── index.tsx
+│       │   ├── about.tsx
+│       │   └── examples/
+│       └── main.tsx          # Entry point + provider nesting
+└── evm/
+    ├── package.json          # Hardhat, toolbox-viem, OpenZeppelin
+    ├── hardhat.config.ts
+    ├── .env.example
+    ├── contracts/Counter.sol
+    ├── test/Counter.test.ts
+    └── ignition/modules/Counter.ts
 ```
 
-### Contract namespacing
+### Workspace structure
 
-Each contract the DApp interacts with gets its own `<contract-name>/` directory in three places:
+This is an npm workspaces monorepo. Root `package.json` declares `"workspaces": ["dapp", "evm"]`. A single `npm install` at the root installs dependencies for both workspaces with a shared lockfile. Shared dependencies (e.g., viem) are hoisted and deduplicated.
 
-- `src/lib/contracts/<contract-name>/` — ABI + address config
-- `src/hooks/contracts/<contract-name>/` — Read hooks and event watchers
-- `src/components/contracts/<contract-name>/` — UI specific to that contract
+### Contract → DApp pipeline
 
-General-purpose components (not tied to a specific contract) live directly in `src/components/`.
+1. Write Solidity in `evm/contracts/`
+2. `npm run compile` — Hardhat compiles to `evm/artifacts/`
+3. `npm run generate` — `@wagmi/cli` reads artifacts, generates typed ABI exports + React hooks into `dapp/src/generated.ts`
+4. Import generated hooks in DApp components
+
+### Contract config pattern
+
+Each contract has a `config.ts` in `dapp/src/lib/contracts/<name>/` that re-exports the generated ABI with the runtime address from env:
+
+```ts
+import { counterAbi } from '@/generated'
+import { env } from '@/lib/env'
+import type { Address } from 'viem'
+
+export { counterAbi }
+export const counterConfig = {
+  address: (env.VITE_CONTRACT_ADDRESS || undefined) as Address | undefined,
+  abi: counterAbi,
+} as const
+```
 
 ## Key conventions
 
 ### Thin routes
 
-Route files in `src/routes/` should only call `createFileRoute` and delegate to a component. No business logic in route files.
+Route files in `dapp/src/routes/` should only call `createFileRoute` and delegate to a component. No business logic in route files.
 
 ### Context/provider pattern
 
@@ -79,36 +126,39 @@ Contexts co-export the provider and hook from the same file (e.g., `useAuth.tsx`
 StrictMode > ThemeProvider > WagmiProvider > QueryClientProvider > AuthProvider > RouterProvider
 ```
 
-ThemeProvider is outermost (no web3 dependency). WagmiProvider wraps QueryClientProvider (wagmi requires it). AuthProvider wraps Router so auth state is available in all routes.
-
 ### Contract interaction pattern
 
-1. Define ABI + address in `lib/contracts/<name>/abi.ts`
-2. Create read hooks with `useReadContract` / `useWatchContractEvent` in `hooks/contracts/<name>/`
-3. Use `useTransactionFlow` for writes (handles signing → confirming → confirmed lifecycle + toasts)
-4. Render with `TransactionButton` which binds to the transaction flow state
+1. Write Solidity in `evm/contracts/<name>.sol`
+2. Compile: `npm run compile`
+3. Generate hooks: `npm run generate`
+4. Create a config file in `dapp/src/lib/contracts/<name>/config.ts` re-exporting the generated ABI + address from env
+5. Use generated `useRead<Name>` hooks for reads
+6. Use `useTransactionFlow` for writes (handles signing → confirming → confirmed lifecycle + toasts)
+7. Render with `TransactionButton` which binds to the transaction flow state
 
 ### Environment variables
 
-Three files must be updated when adding a new env var:
+**DApp env vars** — three files must be updated:
 
-1. `src/lib/env.ts` — Add Zod validation to `envSchema` and include in `raw` object
-2. `src/vite-env.d.ts` — Add TypeScript type to `ImportMetaEnv`
-3. `.env.sample` — Add placeholder for other developers
+1. `dapp/src/lib/env.ts` — Add Zod validation to `envSchema` and include in `raw` object
+2. `dapp/src/vite-env.d.ts` — Add TypeScript type to `ImportMetaEnv`
+3. `dapp/.env.sample` — Add placeholder for other developers
+
+**EVM env vars** — used via `configVariable()` in `evm/hardhat.config.ts`. Add placeholders to `evm/.env.example`.
 
 ### UI components
 
-shadcn/ui components live in `src/components/ui/`. Add new ones with:
+shadcn/ui components live in `dapp/src/components/ui/`. Add new ones with:
 
 ```bash
-npx shadcn@latest add <component>
+cd dapp && npx shadcn@latest add <component>
 ```
 
-Don't hand-write UI primitives — use shadcn/ui.
+Must be run from `dapp/` directory (shadcn reads `components.json` from CWD).
 
 ### Imports
 
-Use the `@/` path alias for all imports (mapped to `src/`).
+Use the `@/` path alias for all imports within the DApp (mapped to `dapp/src/`).
 
 ### Tailwind class merging
 
@@ -118,46 +168,41 @@ Use `cn()` from `@/lib/utils` when merging Tailwind classes (wraps `clsx` + `tai
 
 ### Adding a new page
 
-1. Create a route file in `src/routes/` (e.g., `src/routes/my-page.tsx`)
-2. Create the component in `src/components/`
+1. Create a route file in `dapp/src/routes/`
+2. Create the component in `dapp/src/components/`
 3. The route file imports the component and passes it to `createFileRoute`
 4. `npm run dev` auto-generates `routeTree.gen.ts`
 
 ### Adding a new contract
 
-1. Create `src/lib/contracts/<contract-name>/abi.ts` — export ABI and config object
-2. Create `src/hooks/contracts/<contract-name>/` — read hooks using `useReadContract`
-3. Create `src/components/contracts/<contract-name>/` — UI components for the contract
-4. Add any new env vars (e.g., contract address) following the env var convention above
-
-### Adding a new component
-
-- **Contract-specific**: Place in `src/components/contracts/<contract-name>/`
-- **General**: Place directly in `src/components/`
-
-### Adding a new hook
-
-- **Contract-specific**: Place in `src/hooks/contracts/<contract-name>/`
-- **General**: Place in `src/hooks/`
-- Use TanStack Query patterns (`useQuery`, `useMutation`) for async data where applicable — wagmi hooks already use TanStack Query under the hood
+1. Write `evm/contracts/<ContractName>.sol`
+2. Add the contract name to the `include` array in `dapp/wagmi.config.ts`
+3. `npm run compile && npm run generate`
+4. Create `dapp/src/lib/contracts/<contract-name>/config.ts` — re-export generated ABI + address from env
+5. Create UI components in `dapp/src/components/contracts/<contract-name>/`
+6. Add any new env vars (e.g., contract address) following the env var convention
 
 ### Adding a new context/provider
 
-1. Create a file in `src/hooks/` (e.g., `useMyContext.tsx`)
+1. Create a file in `dapp/src/hooks/` (e.g., `useMyContext.tsx`)
 2. Co-export the provider component and the consumer hook
 3. Add an eslint override in `eslint.config.js` for the file (to suppress `react-refresh/only-export-components`)
 4. Wrap in `main.tsx` at the appropriate nesting level
 
 ### Adding a new env var
 
-1. Add Zod validation to `envSchema` in `src/lib/env.ts`
-2. Add the key to the `raw` object in `parseEnv()` in `src/lib/env.ts`
-3. Add TypeScript type in `src/vite-env.d.ts`
-4. Add placeholder in `.env.sample`
+**DApp**: See "Environment variables" above.
+**EVM**: Add to `evm/hardhat.config.ts` via `configVariable()` and to `evm/.env.example`.
+
+### Adding a shadcn/ui component
+
+```bash
+cd dapp && npx shadcn@latest add <component>
+```
 
 ### Deploying to IPFS
 
-Asset paths are already relative (`base: './'` in `vite.config.ts`), so the build works at any URL depth without changes. For IPFS-specific features, set these env vars before building:
+Asset paths are already relative (`base: './'` in `dapp/vite.config.ts`), so the build works at any URL depth without changes. For IPFS-specific features, set these env vars before building:
 
 ```bash
 VITE_HASH_ROUTING=true        # Use /#/about instead of /about (no SPA fallback needed)
@@ -172,17 +217,17 @@ npm run build
 # Pinata (recommended — dedicated IPFS pinning, free tier available)
 # Install: npm install -g pinata-cli
 # Requires API key from https://app.pinata.cloud
-pinata upload dist/
+pinata upload dapp/dist/
 
 # Storacha (formerly web3.storage) — requires account + payment info even for free 5 GiB tier
 # Install: npm install -g @web3-storage/w3cli
 # Setup: w3 space create <name> && w3 space register <email>
-w3 up dist/
+w3 up dapp/dist/
 
-# Or upload the dist/ folder via any IPFS pinning service's web UI
+# Or upload the dapp/dist/ folder via any IPFS pinning service's web UI
 ```
 
-Note: `ipfs add -r dist/` (Kubo CLI) only stores files on your **local node** — content disappears from the network when your node goes offline. For persistent hosting, use a pinning service or run your own 24/7 IPFS node.
+Note: `ipfs add -r dapp/dist/` (Kubo CLI) only stores files on your **local node** — content disappears from the network when your node goes offline. For persistent hosting, use a pinning service or run your own 24/7 IPFS node.
 
 **Security notes for shared gateways**: On a shared IPFS gateway (e.g., `dweb.link`), all apps share the same origin. This has several implications:
 
@@ -192,29 +237,41 @@ Note: `ipfs add -r dist/` (Kubo CLI) only stores files on your **local node** �
 
 These shared-origin issues go away if you use a custom domain pointing to your IPFS content (via DNSLink or an ENS+IPFS setup).
 
-### Adding a shadcn/ui component
+### Deploying contracts
 
 ```bash
-npx shadcn@latest add <component>
+npx hardhat ignition deploy ./ignition/modules/Counter.ts --network sepolia -w evm
 ```
 
-This generates the component in `src/components/ui/`. Don't edit generated files unless customizing.
+Requires `DEPLOYER_PRIVATE_KEY` and `SEPOLIA_RPC_URL` in `evm/.env`.
+
+## EVM workspace
+
+- **Hardhat v3** (ESM, `type: "module"`)
+- **Solidity 0.8.27** with optimizer (200 runs)
+- **hardhat-toolbox-viem** — viem-based contract interaction in tests (not ethers)
+- **OpenZeppelin 5.4.0** — available for contract imports
+- **node:test** — native Node.js test runner (not Mocha)
+- **Hardhat Ignition** — declarative deployment modules
+- **solhint** — Solidity linter (security, best practices, gas optimization). Config at root `.solhint.json`, extends `solhint:recommended`
+- **prettier-plugin-solidity** — Solidity formatting via Prettier. Registered in root `.prettierrc` `plugins` array
 
 ## Gotchas
 
 - **eslint override for providers**: Files that co-export a provider + hook need an override in `eslint.config.js` to disable `react-refresh/only-export-components`.
-- **routeTree.gen.ts**: Auto-generated by `npm run dev` (TanStack Router plugin). Don't edit manually.
+- **routeTree.gen.ts**: Auto-generated by `npm run dev` (TanStack Router plugin). Don't edit manually. Gitignored.
+- **generated.ts**: Auto-generated by `npm run generate` (@wagmi/cli). Don't edit manually. Gitignored.
 - **SIWE uses `viem/siwe`**, not the `siwe` npm package. The `siwe` package depends on ethers and requires Buffer polyfills that don't work in a pure Vite/browser environment.
-- **MetaMask SDK analytics**: Disabled via `enableAnalytics: false` in the `metaMask()` connector config in `src/lib/wagmi.ts`.
+- **MetaMask SDK analytics**: Disabled via `enableAnalytics: false` in the `metaMask()` connector config in `dapp/src/lib/wagmi.ts`.
+- **shadcn CLI**: Must be run from `dapp/` directory (`cd dapp && npx shadcn@latest add <component>`).
+- **Compile before generate**: `npm run generate` reads from `evm/artifacts/`. Run `npm run compile` first after contract changes.
 
 ## Extending this file
 
-This file is intentionally a single document. At ~170 lines everything here is broadly relevant to most tasks, so there's no benefit to splitting yet.
+This file is intentionally a single document. As the project grows, split to avoid context bloat:
 
-As the project grows (multiple contracts, backend integrations, domain-specific workflows), split to avoid context bloat:
+- **Child-directory `CLAUDE.md`** — Place a `CLAUDE.md` in any subdirectory (e.g., `evm/CLAUDE.md`). It loads on-demand only when Claude reads files in that directory.
+- **`.claude/rules/*.md`** — Modular rule files that activate based on path patterns via frontmatter.
+- **`@path` imports** — Reference other files from this CLAUDE.md with `@docs/some-guide.md`.
 
-- **Child-directory `CLAUDE.md`** — Place a `CLAUDE.md` in any subdirectory (e.g., `src/hooks/contracts/my-token/CLAUDE.md`). It loads on-demand only when Claude reads files in that directory. Use for contract-specific context: deployment addresses, known quirks, integration notes.
-- **`.claude/rules/*.md`** — Modular rule files that activate based on path patterns via frontmatter. Use for domain-specific coding conventions that only apply to certain parts of the codebase.
-- **`@path` imports** — Reference other files from this CLAUDE.md with `@docs/some-guide.md`. Claude resolves these on-demand rather than loading everything upfront.
-
-Keep this root file as a concise index: commands, top-level architecture, and cross-cutting conventions. Move detailed contract knowledge, domain workflows, and specialized patterns into the mechanisms above.
+Keep this root file as a concise index. Move detailed contract knowledge, domain workflows, and specialized patterns into the mechanisms above.
