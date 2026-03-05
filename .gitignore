@@ -31,5 +31,4 @@ evm/coverage/
 evm/coverage.json
 
 # Generated files
-dapp/src/generated.ts
 dapp/src/routeTree.gen.ts

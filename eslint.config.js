@@ -12,7 +12,7 @@ export default tseslint.config(
       'evm/artifacts',
       'evm/cache',
       'dapp/src/routeTree.gen.ts',
-      'dapp/src/generated.ts',
+      'dapp/src/lib/contracts/*/generated.ts',
     ],
   },
   {
