@@ -13,7 +13,7 @@
   "scripts": {
     "compile": "npm run compile -w evm",
     "test:evm": "npm run test -w evm",
-    "generate": "npm run generate -w dapp",
+    "generate": "npm run compile -w evm && npm run generate -w dapp",
     "dev": "npm run dev -w dapp",
     "build": "npm run build -w dapp",
     "typecheck": "npm run typecheck -w dapp",

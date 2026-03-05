@@ -3,7 +3,7 @@ node_modules
 dapp/dist
 dapp/node_modules
 dapp/src/routeTree.gen.ts
-dapp/src/generated.ts
+dapp/src/lib/contracts/*/generated.ts
 evm/artifacts
 evm/cache
 evm/node_modules

@@ -5,7 +5,7 @@
  * Run `npm run generate` to regenerate after contract changes.
  */
 
-import { counterAbi } from '@/generated'
+import { counterAbi } from './generated'
 import { env } from '@/lib/env'
 import type { Address } from 'viem'
 
