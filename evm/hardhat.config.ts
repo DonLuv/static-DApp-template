@@ -1,5 +1,6 @@
 import { defineConfig, configVariable } from 'hardhat/config'
 import hardhatToolboxViem from '@nomicfoundation/hardhat-toolbox-viem'
+import process
 
 export default defineConfig({
   plugins: [hardhatToolboxViem],
